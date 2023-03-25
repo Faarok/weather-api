@@ -2,8 +2,16 @@
 require_once 'class/WeatherStack.php';
 
 // Insert your API key
-$meteo = new WeatherStack('');
-$results = $meteo->getForecast();
+try
+{
+    $meteo = new WeatherStack('');
+    $results = $meteo->getForecast("Bordeaux", "m");
+    // $results = $meteo->getData("Bordeaux", "m");
+}
+catch (Exception $e)
+{
+    die($e->getMessage());
+}
 
 require 'elements/header.php';
 ?>

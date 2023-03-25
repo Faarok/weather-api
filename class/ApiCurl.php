@@ -31,14 +31,18 @@ class ApiCurl
         if(!empty($api))
         {
             $data = curl_exec($api);
+
             if($data === false)
             {
                 throw new Exception(curl_error($api));
             }
-            if(curl_getinfo($api, CURLINFO_HTTP_CODE) === 200)
+            
+            if(curl_getinfo($api, CURLINFO_HTTP_CODE) !== 200)
             {
-                return json_decode($data, true);
+                throw new Exception($data);
             }
+
+            return json_decode($data, true);
         }
         throw new Exception("CURL IS EMPTY");
     }
