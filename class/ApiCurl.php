@@ -1,10 +1,11 @@
 <?php
+
 class ApiCurl
 {
 
     private $url;
 
-    public function __construct(string $url)
+    protected function __construct(string $url)
     {
         if(!empty($url))
         {
@@ -16,7 +17,7 @@ class ApiCurl
         }
     }
 
-    public function curlInit():CurlHandle
+    protected function curlInit():CurlHandle
     {
         $api = curl_init($this->url);
         curl_setopt_array($api, [
@@ -26,24 +27,36 @@ class ApiCurl
         return $api;
     }
 
-    public function exec(CurlHandle $api):array
+    protected function exec(CurlHandle $api):array
     {
         if(!empty($api))
         {
             $data = curl_exec($api);
+
             if($data === false)
             {
                 throw new Exception(curl_error($api));
+                self::close($api);
             }
-            if(curl_getinfo($api, CURLINFO_HTTP_CODE) === 200)
+            
+            $code = curl_getinfo($api, CURLINFO_HTTP_CODE);
+            if($code !== 200)
             {
-                return json_decode($data, true);
+                curl_close($api);
+                if($code === 401)
+                {
+                    $data = json_decode($data, true);
+                    throw new Exception($data['message'], 401);
+                }
+                throw new Exception($data, $code);
             }
+
+            return json_decode($data, true);
         }
         throw new Exception("CURL IS EMPTY");
     }
 
-    public function close(CurlHandle $api):void
+    protected function close(CurlHandle $api):void
     {
         if(!empty($api))
         {
