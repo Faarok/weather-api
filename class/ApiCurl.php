@@ -7,7 +7,6 @@ require_once 'HTTPException.php';
  * Class légère permettant d'initialiser libcurl.
  * 
  * @author Svein Samson <samson.svein@gmail.com>
- * 
  */
 class ApiCurl
 {

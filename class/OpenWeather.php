@@ -1,10 +1,17 @@
 <?php
 require_once 'ApiCurl.php';
 
+
+/**
+ * Permet d'utiliser l'API d'Open Weather Map à partir de la class ApiCurl
+ * 
+ * @author Svein Samson <samson.svein@gmail.com>
+ */
 class OpenWeather extends ApiCurl
 {
 
     private $apiKey;
+    private $curl;
     
     /**
      * Instancie la class et initialise la clef API
@@ -43,10 +50,10 @@ class OpenWeather extends ApiCurl
     {
         if(!empty($this->apiKey))
         {
-            $curl = new ApiCurl("https://api.openweathermap.org/data/2.5/weather?&q={$city}&units={$units}&lang={$lang}&appid={$this->apiKey}");
-            $api = $curl->curlInit();
-            $data = $curl->exec($api);
-            $curl->close($api);
+            $this->curl = new ApiCurl("https://api.openweathermap.org/data/2.5/weather?&q={$city}&units={$units}&lang={$lang}&appid={$this->apiKey}");
+            $api = $this->curl->curlInit();
+            $data = $this->curl->exec($api);
+            $this->curl->close($api);
 
             if(empty($data))
             {
