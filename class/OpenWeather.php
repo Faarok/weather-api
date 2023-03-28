@@ -5,7 +5,16 @@ class OpenWeather extends ApiCurl
 {
 
     private $apiKey;
-
+    
+    /**
+     * Instancie la class et initialise la clef API
+     *
+     * @param  string $apiKey
+     * 
+     * @throws Exception si la clef API est vide
+     * 
+     * @return void
+     */
     public function __construct(string $apiKey)
     {
         if(!empty($apiKey))
@@ -17,13 +26,24 @@ class OpenWeather extends ApiCurl
             throw new Exception("UNDEFINED API KEY");
         }
     }
-
+    
+    /**
+     * Récupère toutes les informations météorologique actuelle
+     *
+     * @param  string $city Ville (ex: Bordeaux)
+     * @param  string $units Unités de mesure (ex: metric)
+     * @param  string $lang Langue (ex: fr)
+     * 
+     * @throws Exception si la clef API est vide
+     * @throws Exception si l'exécution de cURL ne renvoie pas de donnée
+     * 
+     * @return array
+     */
     public function getData(string $city = 'Paris', string $units = 'standard', string $lang = 'en'):array
     {
         if(!empty($this->apiKey))
         {
-            $url = "https://api.openweathermap.org/data/2.5/weather?&q={$city}&units={$units}&lang={$lang}&appid={$this->apiKey}";
-            $curl = new ApiCurl($url);
+            $curl = new ApiCurl("https://api.openweathermap.org/data/2.5/weather?&q={$city}&units={$units}&lang={$lang}&appid={$this->apiKey}");
             $api = $curl->curlInit();
             $data = $curl->exec($api);
             $curl->close($api);
@@ -37,10 +57,19 @@ class OpenWeather extends ApiCurl
         }
         throw new Exception("UNDEFINED API KEY");
     }
-
+    
+    /**
+     * Récupère la météo actuelle (ville, heure, temps, température et une icone)
+     *
+     * @param  string $city Ville (ex: Bordeaux)
+     * @param  string $units Unités de mesure (ex: metric)
+     * @param  string $lang Langue (ex: fr)
+     * 
+     * @return array
+     */
     public function getForecast(string $city = 'Paris', string $units = 'standard', string $lang = 'en'):array
     {
-        $data = self::getData($city, $units);
+        $data = self::getData($city, $units, $lang);
         $results = [
             'city' => $data['name'],
             'hour' => date('d/m/Y à H:i', $data['dt']),
