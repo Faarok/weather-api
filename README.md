@@ -45,6 +45,39 @@ $data = $this->curl->exec($api);
 ```php
 $this->curl->close($api);
 ```
+<br>
+
+***This is how your final result should look like :***
+
+```php
+<?php
+class myNewApi extends ApiCurl
+{
+    private $curl;
+
+    public function yourMethod()
+    {
+        try
+        {
+            $this->curl = new ApiCurl('Your URL');
+            $api = $this->curl->curlInit();
+            $data = $this->curl->exec($api);
+            // Then do whatever you want with the returned array.
+
+            $this->curl->close($api); 
+
+            return $data;
+        }
+        catch (Exception | Error $e)
+        {
+            $this->curl->close($api);
+            $e->getMessage();
+        }
+    }
+}
+?>
+```
+**You can obviously do it differently !**
 
 ***
 
