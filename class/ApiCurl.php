@@ -1,7 +1,13 @@
 <?php
 
-require_once 'UnauthorizedHTTPException.php';
-require_once 'HTTPException.php';
+namespace Curl;
+
+use Exception;
+use CurlHandle;
+use Curl\Exceptions\{
+    HTTPException,
+    UnauthorizedHTTPException
+};
 
 /**
  * Class légère permettant d'initialiser libcurl.

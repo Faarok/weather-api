@@ -1,0 +1,16 @@
+{
+    "name": "faarok/curl",
+    "description": "Some class working with cURL with OpenWeather and WeatherStack as PoC",
+    "autoload": {
+        "psr-4": {
+            "Curl\\": "class/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Svein Samson",
+            "email": "samson.svein@gmail.com"
+        }
+    ],
+    "require": {}
+}

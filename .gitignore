@@ -15,4 +15,6 @@
 # Apache serv configuration
 *.htaccess
 
+# Ignore /.vscode and /vendor directory 
 /.vscode
+/vendor/

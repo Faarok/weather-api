@@ -1,7 +1,12 @@
 <?php
 declare(strict_types=1);
-require_once 'class/WeatherStack.php';
-require_once 'class/OpenWeather.php';
+
+use Curl\Api\{
+    OpenWeather,
+    WeatherStack
+};
+
+require_once 'vendor/autoload.php';
 
 $error = null;
 

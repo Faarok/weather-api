@@ -1,17 +1,21 @@
 <?php
-require_once 'ApiCurl.php';
+
+namespace Curl\Api;
+
+use Exception;
+use Curl\ApiCurl;
 
 /**
- * Permet d'utiliser l'API de Weather Stack à partir de la class ApiCurl
+ * Permet d'utiliser l'API d'Open Weather Map à partir de la class ApiCurl
  * 
  * @author Svein Samson <samson.svein@gmail.com>
  */
-class WeatherStack extends ApiCurl
+class OpenWeather extends ApiCurl
 {
 
     private $apiKey;
     private $curl;
-
+    
     /**
      * Instancie la class et initialise la clef API
      *
@@ -32,33 +36,29 @@ class WeatherStack extends ApiCurl
             throw new Exception("UNDEFINED API KEY");
         }
     }
-
+    
     /**
      * Récupère toutes les informations météorologique actuelle
      *
      * @param  string $city Ville (ex: Bordeaux)
-     * @param  string $units Unités de mesure (ex: m)
+     * @param  string $units Unités de mesure (ex: metric)
+     * @param  string $lang Langue (ex: fr)
      * 
      * @throws Exception si la clef API est vide
      * @throws Exception si l'exécution de cURL ne renvoie pas de donnée
-     * @throws HTTPException si l'API renvoie succes : false
      * 
      * @return array
      */
-    public function getData(string $city = 'Paris', string $units = 's'):array
+    public function getData(string $city = 'Paris', string $units = 'standard', string $lang = 'en'):array
     {
         if(!empty($this->apiKey))
         {
-            $this->curl = new ApiCurl("http://api.weatherstack.com/current?access_key={$this->apiKey}&query={$city}&units={$units}");
+            $this->curl = new ApiCurl("https://api.openweathermap.org/data/2.5/weather?&q={$city}&units={$units}&lang={$lang}&appid={$this->apiKey}");
             $api = $this->curl->curlInit();
             $data = $this->curl->exec($api);
             $this->curl->close($api);
 
-            if(array_key_exists("success", $data))
-            {
-                throw new HTTPException("ERROR CODE {$data['error']['code']} | TYPE : {$data['error']['type']} | INFO : {$data['error']['info']}");
-            }
-            elseif(empty($data))
+            if(empty($data))
             {
                 throw new Exception("THERE IS NO RESULT");
             }
@@ -67,7 +67,7 @@ class WeatherStack extends ApiCurl
         }
         throw new Exception("UNDEFINED API KEY");
     }
-
+    
     /**
      * Récupère la météo actuelle (ville, heure, temps, température et une icone)
      *
@@ -77,15 +77,15 @@ class WeatherStack extends ApiCurl
      * 
      * @return array
      */
-    public function getForecast(string $city = 'Paris', string $units = 's'):array
+    public function getForecast(string $city = 'Paris', string $units = 'standard', string $lang = 'en'):array
     {
-        $data = self::getData($city, $units);
+        $data = self::getData($city, $units, $lang);
         $results = [
-            'city' => $data['request']['query'],
-            'hour' => $data['location']['localtime'],
-            'weather' => $data['current']['weather_descriptions'][0],
-            'temp' => $data['current']['temperature'],
-            'icon' => $data['current']['weather_icons'][0]
+            'city' => $data['name'],
+            'hour' => date('d/m/Y à H:i', $data['dt']),
+            'weather' => ucfirst($data['weather'][0]['description']),
+            'temp' => "{$data['main']['temp']}°C",
+            'icon' => "https://openweathermap.org/img/wn/{$data['weather'][0]['icon']}@2x.png"
         ];
 
         return $results;
