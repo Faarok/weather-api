@@ -15,7 +15,7 @@ try
     // Insert your API key
     $openWeather = new OpenWeather('');
     $results = $openWeather->getForecast();
-    $results = $weatherStack->getData();
+    // $results = $openWeather->getData();
 }
 catch(Exception | Error $e)
 {
